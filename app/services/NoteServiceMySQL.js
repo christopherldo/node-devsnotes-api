@@ -46,4 +46,15 @@ module.exports = {
     const note = await findOne(public_id);
     return note;
   },
+  delete: async public_id => {
+    const note = await findOne(public_id);
+
+    await Note.destroy({
+      where: {
+        public_id,
+      },
+    });
+
+    return note;
+  },
 };

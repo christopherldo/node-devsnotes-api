@@ -149,6 +149,41 @@ module.exports = {
     res.json(json);
   },
   delete: async (req, res) => {
+    const json = {
+      error: '',
+      result: [],
+    };
 
+    const public_id = req.params.id;
+
+    if (validator.isUUID(public_id, 4) === false) {
+      json.error = 'The public id you informed is invalid. It must be a valid UUIDv4';
+      res.status(400).send(json);
+      return;
+    };
+
+    let note = null;
+
+    try {
+      note = await NoteService.delete(public_id);
+    } catch (error) {
+      json.error = error.message;
+      res.status(500).send(json);
+      return;
+    };
+
+    if(note === null){
+      json.error = 'The note you informed was not found on database';
+      res.status(404).send(json);
+      return;
+    };
+
+    json.result = {
+      message: 'Success deleting the note!',
+      public_id: note.public_id,
+      title: note.title,
+    };
+
+    res.json(json);
   },
 };

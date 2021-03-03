@@ -13,6 +13,7 @@ module.exports = {
         unique: true,
       },
       title: {
+        allowNull: false,
         type: DataTypes.STRING(200),
       },
       body: {
