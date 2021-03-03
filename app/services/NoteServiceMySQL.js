@@ -14,6 +14,11 @@ const findOne = async public_id => {
 };
 
 module.exports = {
+  getAll: async () => {
+    const notes = await Note.findAll();
+    
+    return notes;
+  },
   new: async data => {
     do {
       data.public_id = uuid.v4();
