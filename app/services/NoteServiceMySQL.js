@@ -36,4 +36,14 @@ module.exports = {
 
     return note;
   },
+  update: async (public_id, data) => {
+    await Note.update(data, {
+      where: {
+        public_id
+      },
+    });
+
+    const note = await findOne(public_id);
+    return note;
+  },
 };
