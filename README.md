@@ -5,5 +5,4 @@
 * ```npm install``` or ```yarn install``` to install all needed libraries;
 * ```npx sequelize db:migrate``` or ```yarn sequelize db:migrate``` to set the database with its columns and fields;
 * ```npm start``` or ```yarn start``` to start the server;
-<br>
 * If you want to undo the database creation: ```npx sequelize db:migrate:undo``` or ```yarn sequelize db:migrate:undo```;
