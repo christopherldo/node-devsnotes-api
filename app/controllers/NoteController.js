@@ -1,4 +1,5 @@
 const NoteService = require('../services/NoteServiceMySQL');
+const validator = require('validator');
 
 module.exports = {
   ping: (req, res) => {
@@ -12,7 +13,16 @@ module.exports = {
       result: [],
     };
 
-    const notes = await NoteService.getAll();
+    let notes = {};
+
+    try {
+      notes = await NoteService.getAll();
+    } catch (error) {
+      json.error = error.message;
+
+      res.status(500).send(json);
+      return;
+    };
 
     for (let note in notes) {
       json.result.push({
@@ -23,8 +33,46 @@ module.exports = {
 
     res.json(json);
   },
-  one: (req, res) => {
+  one: async (req, res) => {
+    const json = {
+      error: '',
+      result: [],
+    };
 
+    const public_id = req.params.id;
+
+    if (validator.isUUID(public_id, 4) === false) {
+      json.error = 'The public id you informed is invalid. It must be a valid UUIDv4';
+
+      res.status(400).send(json);
+      return;
+    };
+
+    let note = null;
+
+    try {
+      note = await NoteService.findById(public_id);
+    } catch (error) {
+      json.error = error.message;
+
+      res.status(500).send(json);
+      return;
+    };
+
+    if (note === null) {
+      json.error = 'The note you informed was not found on database';
+
+      res.status(404).send(json);
+      return;
+    };
+
+    json.result = {
+      public_id: note.public_id,
+      title: note.title,
+      body: note.body,
+    };
+
+    res.json(json);
   },
   new: async (req, res) => {
     const json = {
@@ -41,10 +89,10 @@ module.exports = {
 
     res.json(json);
   },
-  edit: (req, res) => {
+  edit: async (req, res) => {
 
   },
-  delete: (req, res) => {
+  delete: async (req, res) => {
 
   },
 };
