@@ -19,7 +19,6 @@ module.exports = {
       notes = await NoteService.getAll();
     } catch (error) {
       json.error = error.message;
-
       res.status(500).send(json);
       return;
     };
@@ -43,7 +42,6 @@ module.exports = {
 
     if (validator.isUUID(public_id, 4) === false) {
       json.error = 'The public id you informed is invalid. It must be a valid UUIDv4';
-
       res.status(400).send(json);
       return;
     };
@@ -54,14 +52,12 @@ module.exports = {
       note = await NoteService.findById(public_id);
     } catch (error) {
       json.error = error.message;
-
       res.status(500).send(json);
       return;
     };
 
     if (note === null) {
       json.error = 'The note you informed was not found on database';
-
       res.status(404).send(json);
       return;
     };
@@ -85,7 +81,21 @@ module.exports = {
       body: req.body.body,
     };
 
-    json.result = await NoteService.new(data);
+    let note = null;
+
+    try {
+      note = await NoteService.add(data);
+    } catch (error) {
+      json.error = error.message;
+      res.status(500).send(json);
+      return;
+    };
+
+    json.result = {
+      public_id: note.public_id,
+      title: note.title,
+      body: note.body,
+    };
 
     res.json(json);
   },
